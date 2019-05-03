@@ -3,6 +3,8 @@
 #include "utils.h"
 
 
+/******************************************** Function Definitions ********************************************/
+
 void gradient(double *x, double *y, double *theta, double (*h)(double *x, double *theta, int n),
  double *cost, double *gradient, int n, int m);
 double hypothesis(double *x, double *theta, int n);
@@ -13,6 +15,10 @@ int n, int m, int num_iters);
 void gradient_update(double *x, double *y, double *theta, double (*h)(double *x, double *theta, int n),
  double *cost, int n, int m, double alpha);
 
+/***************************************************************************************************************/
+
+
+/******************************************** Stochastic Gradient Descent ********************************************/
 
 void stochastic_gradient_descent(double *x, double *y, double *theta, double (*h)(double *x, double *theta, int n),
 int n, int m, int num_iters) {
@@ -50,6 +56,10 @@ void gradient_update(double *x, double *y, double *theta, double (*h)(double *x,
     *cost = (*cost)/2;
 }
 
+
+/***************************************************************************************************************/
+
+/******************************************** Gradient Descent ********************************************/
 
 void gradient_descent(double *x, double *y, double *theta, double (*h)(double *x, double *theta, int n),
 int n, int m, int num_iters) {
@@ -91,6 +101,11 @@ void gradient(double *x, double *y, double *theta, double (*h)(double *x, double
     *cost = (*cost)/2;
 }
 
+/***************************************************************************************************************/
+
+
+/******************************************** Hypothesis ********************************************/
+
 double hypothesis(double *x, double *theta, int n) {
     double val = 0.0;
     for(int i = 0; i < n; i++) {
@@ -99,6 +114,11 @@ double hypothesis(double *x, double *theta, int n) {
 
     return val;
 }
+
+/***************************************************************************************************************/
+
+
+/******************************************** Main Function ********************************************/
 
 int main() {
     int n = 1000;
