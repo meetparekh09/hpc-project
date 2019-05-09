@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "utils.h"
+#include "read_file.h"
 
 
 /******************************************** Function Definitions ********************************************/
@@ -74,7 +75,7 @@ int n, int m, int num_iters) {
     for(int i = 0; i < num_iters; i++) {
         gradient(x, y, theta, &hypothesis, &cost, grad, n, m);
 
-        // if(i % 100 == 0)
+        if(i % 100 == 0)
             printf("Iter :: %d, Cost :: %f\n", i, cost);
         for(int j = 0; j < n; j++) {
             theta[j] += alpha*grad[j];
@@ -129,12 +130,11 @@ int main() {
     double *y = (double*)malloc(m*sizeof(double));
     double *theta = (double*)malloc(n*sizeof(double));
 
-    for(int i = 0; i < m*n; i+=n) {
-        y[i/n] = drand48();
-        for(int j = i; j < i + n; j++) {
-            x[j] = drand48();
-            if(i == 0) theta[j] = drand48();
-        }
+    read_x(x, m, n);
+    read_y(y, m);
+
+    for(int i = 0; i < n; i++) {
+        theta[i] = drand48();
     }
 
 
