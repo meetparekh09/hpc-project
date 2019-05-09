@@ -3,6 +3,8 @@
 #include "utils.h"
 
 
+/******************************************** Function Definitions ********************************************/
+
 void gradient(double *x, double *y, double *theta, double (*h)(double *x, double *theta, int n),
  double *cost, double *gradient, int n, int m);
 double hypothesis(double *x, double *theta, int n);
@@ -13,6 +15,10 @@ int n, int m, int num_iters);
 void gradient_update(double *x, double *y, double *theta, double (*h)(double *x, double *theta, int n),
  double *cost, int n, int m, double alpha);
 
+/***************************************************************************************************************/
+
+
+/******************************************** Stochastic Gradient Descent ********************************************/
 
 void stochastic_gradient_descent(double *x, double *y, double *theta, double (*h)(double *x, double *theta, int n),
 int n, int m, int num_iters) {
@@ -51,6 +57,10 @@ void gradient_update(double *x, double *y, double *theta, double (*h)(double *x,
 }
 
 
+/***************************************************************************************************************/
+
+/******************************************** Gradient Descent ********************************************/
+
 void gradient_descent(double *x, double *y, double *theta, double (*h)(double *x, double *theta, int n),
 int n, int m, int num_iters) {
     double alpha = 1.0/m/n;
@@ -64,7 +74,7 @@ int n, int m, int num_iters) {
     for(int i = 0; i < num_iters; i++) {
         gradient(x, y, theta, &hypothesis, &cost, grad, n, m);
 
-        if(i % 100 == 0)
+        // if(i % 100 == 0)
             printf("Iter :: %d, Cost :: %f\n", i, cost);
         for(int j = 0; j < n; j++) {
             theta[j] += alpha*grad[j];
@@ -91,6 +101,11 @@ void gradient(double *x, double *y, double *theta, double (*h)(double *x, double
     *cost = (*cost)/2;
 }
 
+/***************************************************************************************************************/
+
+
+/******************************************** Hypothesis ********************************************/
+
 double hypothesis(double *x, double *theta, int n) {
     double val = 0.0;
     for(int i = 0; i < n; i++) {
@@ -100,9 +115,14 @@ double hypothesis(double *x, double *theta, int n) {
     return val;
 }
 
+/***************************************************************************************************************/
+
+
+/******************************************** Main Function ********************************************/
+
 int main() {
-    int n = 1000;
-    int m = 1000000;
+    int n = 100;
+    int m = 10000;
     int num_iters = 1000;
 
     double *x = (double*)malloc(m*n*sizeof(double));

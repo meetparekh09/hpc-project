@@ -13,15 +13,15 @@ TARGETS =  $(basename $(wildcard *.cpp)) $(basename $(wildcard *.c)) $(basename 
 all : $(TARGETS)
 
 %:%.cpp *.h
-	$(CXX) $(CXXFLAGS) $< $(LIBS) -o $@
+	$(CXX) $(CXXFLAGS) $< $(LIBS) -o $@.exe
 
 %:%.c
-	$(CXX) $(CXXFLAGS) $(CUDA_INCDIR) $< $(CUDA_LIBS) -o $@
+	$(CXX) $(CXXFLAGS) $(CUDA_INCDIR) $< $(CUDA_LIBS) -o $@.exe
 
 %:%.cu
-	$(NVCC) $(NVCCFLAGS) $< -o $@
+	$(NVCC) $(NVCCFLAGS) $< -o $@.exe
 
 clean:
-	-$(RM) $(TARGETS) *~
+	-$(RM) *.exe *~
 
 .PHONY: all, clean
