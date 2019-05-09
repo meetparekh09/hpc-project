@@ -74,7 +74,7 @@ int n, int m, int num_iters) {
     for(int i = 0; i < num_iters; i++) {
         gradient(x, y, theta, &hypothesis, &cost, grad, n, m);
 
-        if(i % 100 == 0)
+        // if(i % 100 == 0)
             printf("Iter :: %d, Cost :: %f\n", i, cost);
         for(int j = 0; j < n; j++) {
             theta[j] += alpha*grad[j];
@@ -121,8 +121,8 @@ double hypothesis(double *x, double *theta, int n) {
 /******************************************** Main Function ********************************************/
 
 int main() {
-    int n = 1000;
-    int m = 1000000;
+    int n = 100;
+    int m = 10000;
     int num_iters = 1000;
 
     double *x = (double*)malloc(m*n*sizeof(double));
