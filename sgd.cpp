@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <math.h>
+#include <omp.h>
 #include "utils.h"
 #include "read_file.h"
 
@@ -25,11 +26,17 @@ void stochastic_gradient_descent(double *x, double *y, double *theta, double (*h
 int n, int m, int num_iters) {
     double alpha = 1.0/n;
     double cost = 0.0;
+    double prev_cost = 0.0;
 
     for(int i = 0; i < num_iters; i++) {
         gradient_update(x, y, theta, &hypothesis, &cost, n, m, alpha);
+        if(fabs(prev_cost - cost) < 0.1) {
+            printf("Iterations to converge :: %d, Cost :: %lf\n", i, cost);
+            break;
+        }
         if(i % 100 == 0)
             printf("Iter :: %d, Cost :: %f\n", i, cost);
+        prev_cost = cost;
         cost = 0.0;
     }
 
@@ -66,6 +73,7 @@ void gradient_descent(double *x, double *y, double *theta, double (*h)(double *x
 int n, int m, int num_iters) {
     double alpha = 1.0/m/n;
     double cost = 0.0;
+    double prev_cost = 0.0;
     double *grad = (double*)malloc(n*sizeof(double));
 
     for(int i = 0; i < n; i++) {
@@ -74,13 +82,17 @@ int n, int m, int num_iters) {
 
     for(int i = 0; i < num_iters; i++) {
         gradient(x, y, theta, &hypothesis, &cost, grad, n, m);
-
+        if(fabs(prev_cost - cost) < 0.1) {
+            printf("Iterations to converge :: %d, Cost :: %lf\n", i, cost);
+            break;
+        }
         if(i % 100 == 0)
             printf("Iter :: %d, Cost :: %f\n", i, cost);
         for(int j = 0; j < n; j++) {
             theta[j] += alpha*grad[j];
             grad[j] = 0.0;
         }
+        prev_cost = cost;
         cost = 0.0;
     }
 }
