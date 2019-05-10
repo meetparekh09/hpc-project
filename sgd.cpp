@@ -9,11 +9,19 @@
 
 void gradient(double *x, double *y, double *theta, double (*h)(double *x, double *theta, int n),
  double *cost, double *gradient, int n, int m);
+
 double hypothesis(double *x, double *theta, int n);
+
 void gradient_descent(double *x, double *y, double *theta, double (*h)(double *x, double *theta, int n),
+void (*g)(double *x, double *y, double *theta, double (*h)(double *x, double *theta, int n),
+ double *cost, double *grad, int n, int m),
 int n, int m, int num_iters);
+
 void stochastic_gradient_descent(double *x, double *y, double *theta, double (*h)(double *x, double *theta, int n),
+void (*g)(double *x, double *y, double *theta, double (*h)(double *x, double *theta, int n),
+ double *cost, int n, int m, double alpha),
 int n, int m, int num_iters);
+
 void gradient_update(double *x, double *y, double *theta, double (*h)(double *x, double *theta, int n),
  double *cost, int n, int m, double alpha);
 
@@ -23,18 +31,20 @@ void gradient_update(double *x, double *y, double *theta, double (*h)(double *x,
 /******************************************** Stochastic Gradient Descent ********************************************/
 
 void stochastic_gradient_descent(double *x, double *y, double *theta, double (*h)(double *x, double *theta, int n),
+void (*g)(double *x, double *y, double *theta, double (*h)(double *x, double *theta, int n),
+ double *cost, int n, int m, double alpha),
 int n, int m, int num_iters) {
     double alpha = 1.0/n;
     double cost = 0.0;
     double prev_cost = 0.0;
 
     for(int i = 0; i < num_iters; i++) {
-        gradient_update(x, y, theta, &hypothesis, &cost, n, m, alpha);
+        g(x, y, theta, &hypothesis, &cost, n, m, alpha);
         if(fabs(prev_cost - cost) < 0.1) {
             printf("Iterations to converge :: %d, Cost :: %lf\n", i, cost);
             break;
         }
-        if(i % 100 == 0)
+        // if(i % 100 == 0)
             printf("Iter :: %d, Cost :: %f\n", i, cost);
         prev_cost = cost;
         cost = 0.0;
@@ -70,6 +80,8 @@ void gradient_update(double *x, double *y, double *theta, double (*h)(double *x,
 /******************************************** Gradient Descent ********************************************/
 
 void gradient_descent(double *x, double *y, double *theta, double (*h)(double *x, double *theta, int n),
+void (*g)(double *x, double *y, double *theta, double (*h)(double *x, double *theta, int n),
+ double *cost, double *grad, int n, int m),
 int n, int m, int num_iters) {
     double alpha = 1.0/m/n;
     double cost = 0.0;
@@ -81,12 +93,12 @@ int n, int m, int num_iters) {
     }
 
     for(int i = 0; i < num_iters; i++) {
-        gradient(x, y, theta, &hypothesis, &cost, grad, n, m);
+        g(x, y, theta, &hypothesis, &cost, grad, n, m);
         if(fabs(prev_cost - cost) < 0.1) {
             printf("Iterations to converge :: %d, Cost :: %lf\n", i, cost);
             break;
         }
-        if(i % 100 == 0)
+        // if(i % 100 == 0)
             printf("Iter :: %d, Cost :: %f\n", i, cost);
         for(int j = 0; j < n; j++) {
             theta[j] += alpha*grad[j];
@@ -134,16 +146,37 @@ double hypothesis(double *x, double *theta, int n) {
 /******************************************** Main Function ********************************************/
 
 int main() {
+    Timer t;
     int n = 100;
-    int m = 10000;
-    int num_iters = 1000;
+    int m = 1000000;
+    int num_iters = 10;
 
     double *x = (double*)malloc(m*n*sizeof(double));
     double *y = (double*)malloc(m*sizeof(double));
     double *theta = (double*)malloc(n*sizeof(double));
 
+    t.tic();
     read_x(x, m, n);
     read_y(y, m);
+
+    for(int i = 0; i < n; i++) {
+        theta[i] = drand48();
+    }
+    double time = t.toc();
+    printf("Time to Initialize :: %lf\n", time);
+
+
+
+    printf("==============================================================================================\n");
+    printf("Convergence in Gradient Descent :: \n\n\n");
+
+    t.tic();
+    gradient_descent(x, y, theta, hypothesis, gradient, n, m, num_iters);
+    time = t.toc();
+
+    printf("Time for Gradient Descent :: %lf\n", time);
+    printf("\n\n\n");
+
 
     for(int i = 0; i < n; i++) {
         theta[i] = drand48();
@@ -151,23 +184,13 @@ int main() {
 
 
     printf("==============================================================================================\n");
-    printf("Convergence in Gradient Descent :: \n\n\n");
-    gradient_descent(x, y, theta, hypothesis, n, m, num_iters);
-    printf("\n\n\n");
-
-
-    for(int i = 0; i < m*n; i+=n) {
-        y[i/n] = drand48();
-        for(int j = i; j < i + n; j++) {
-            x[j] = drand48();
-            if(i == 0) theta[j] = drand48();
-        }
-    }
-
-
-    printf("==============================================================================================\n");
     printf("Convergence in Stochastic Gradient Descent :: \n\n\n");
-    stochastic_gradient_descent(x, y, theta, hypothesis, n, m, num_iters);
+
+    t.tic();
+    stochastic_gradient_descent(x, y, theta, hypothesis, gradient_update, n, m, num_iters);
+    time = t.toc();
+
+    printf("Time for Stochastic Gradient Descent :: %lf\n", time);
     printf("\n\n\n");
     printf("==============================================================================================\n");
 }
