@@ -222,12 +222,20 @@ double omp_hypothesis(double *x, double *theta, int n) {
 int main() {
     Timer t;
     int n = 100;
-    int m = 1000000;
-    int num_iters = 10;
+    int m = 10000;
+    int num_iters = 1000;
 
     double *x = (double*)malloc(m*n*sizeof(double));
     double *y = (double*)malloc(m*sizeof(double));
     double *theta = (double*)malloc(n*sizeof(double));
+
+    #ifdef _OPENMP
+    omp_set_num_threads(64);
+    int t_num = omp_get_num_threads();
+    printf("Number of threads :: %d\n", t_num);
+    #endif
+
+    printf("Reading Data :: \n");
 
     t.tic();
     read_x(x, m, n);
