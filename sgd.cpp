@@ -229,6 +229,13 @@ int main() {
     double *y = (double*)malloc(m*sizeof(double));
     double *theta = (double*)malloc(n*sizeof(double));
 
+    // #ifdef _OPENMP
+    // int t_num = omp_get_num_threads();
+    // printf("Number of threads :: %d\n", t_num);
+    // #endif
+
+    printf("Reading Data :: \n");
+
     t.tic();
     read_x(x, m, n);
     read_y(y, m);
@@ -239,7 +246,20 @@ int main() {
     double time = t.toc();
     printf("Time to Initialize :: %lf\n", time);
 
+    printf("==============================================================================================\n");
+    printf("Convergence in OMP Gradient Descent :: \n\n\n");
 
+    t.tic();
+    gradient_descent(x, y, theta, hypothesis, omp_gradient, n, m, num_iters);
+    time = t.toc();
+
+    printf("Time for OMP Gradient Descent :: %lf\n", time);
+    printf("\n\n\n");
+
+
+    for(int i = 0; i < n; i++) {
+        theta[i] = drand48();
+    }
 
     printf("==============================================================================================\n");
     printf("Convergence in Gradient Descent :: \n\n\n");
@@ -249,22 +269,6 @@ int main() {
     time = t.toc();
 
     printf("Time for Gradient Descent :: %lf\n", time);
-    printf("\n\n\n");
-
-
-    for(int i = 0; i < n; i++) {
-        theta[i] = drand48();
-    }
-
-
-    printf("==============================================================================================\n");
-    printf("Convergence in OMP Gradient Descent :: \n\n\n");
-
-    t.tic();
-    gradient_descent(x, y, theta, hypothesis, omp_gradient, n, m, num_iters);
-    time = t.toc();
-
-    printf("Time for OMP Gradient Descent :: %lf\n", time);
     printf("\n\n\n");
 
 
