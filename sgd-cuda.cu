@@ -121,7 +121,7 @@ int main() {
             cudaMemcpyAsync(c, h, m * n * sizeof(double), cudaMemcpyDeviceToHost);
             cudaDeviceSynchronize();
             #ifdef _OPENMP
-            #pragma omp parallel for (+:reduction)
+            #pragma omp parallel for reduction(+:cost)
             #endif
             for(int i = 0; i < m; i++) {
                 cost += c[n*i] * c[n*i];

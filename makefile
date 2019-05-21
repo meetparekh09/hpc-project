@@ -6,7 +6,7 @@ CXXFLAGS +=  -fno-tree-vectorize
 
 NVCC = nvcc
 NVCCFLAGS = -std=c++11
-#NVCCFLAGS += -Xcompiler# "-fopenmp" # pass -fopenmp to host compiler (g++)
+NVCCFLAGS += -Xcompiler "-fopenmp" # pass -fopenmp to host compiler (g++)
 
 TARGETS =  $(basename $(wildcard *.cpp)) $(basename $(wildcard *.c)) $(basename $(wildcard *.cu))
 
