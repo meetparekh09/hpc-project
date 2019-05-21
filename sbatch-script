@@ -1,0 +1,5 @@
+#!/bin/bash
+#SBATCH --nodes=64
+#SBATCH --output=slurm_%j.out
+
+./sgd.exe

@@ -29,7 +29,6 @@ __global__ void update_kernel(double *theta, double *grad, double alpha, int n) 
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
 
     if(idx < n) {
-        // printf("\n\n%lf\n\n", grad[idx]);
         theta[idx] += alpha * grad[idx];
         grad[idx] = 0.0;
     }
