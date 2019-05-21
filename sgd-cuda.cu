@@ -34,30 +34,30 @@ __global__ void update_kernel(double *theta, double *grad, double alpha, int n) 
     }
 }
 
-__global__ void reduction_kernel2(double* h, double *y, int m, int n){
-  int x_idx = blockIdx.x * blockDim.x + threadIdx.x;
-  int y_idx = blockIdx.y * blockDim.y + threadIdx.y;
+__global__ void reduction_kernel2(double* h, double *y, int m, int n) {
+    int x_idx = blockIdx.x * blockDim.x + threadIdx.x;
+    int y_idx = blockIdx.y * blockDim.y + threadIdx.y;
 
-  if(x_idx >= m || y_idx >= n) return;
+    if(x_idx >= m || y_idx >= n) return;
 
-  int idx = x_idx * n + y_idx;
+    int idx = x_idx * n + y_idx;
 
-  __syncthreads();
-  if (y_idx < 64 && y_idx + 64 < n) h[idx] += h[idx +  64];
-  __syncthreads();
-  if (y_idx <  32) {
-    h[idx] += h[idx +  32];
     __syncthreads();
-    h[idx] += h[idx +  16];
+    if (y_idx < 64 && y_idx + 64 < n) h[idx] += h[idx +  64];
     __syncthreads();
-    h[idx] += h[idx + 8];
-    __syncthreads();
-    h[idx] += h[idx +  4];
-    __syncthreads();
-    h[idx] += h[idx +   2];
-    __syncthreads();
-    if (y_idx == 0) h[idx] = y[x_idx] - (h[idx] + h[idx + 1]);
-  }
+    if (y_idx <  32) {
+        h[idx] += h[idx +  32];
+        __syncthreads();
+        h[idx] += h[idx +  16];
+        __syncthreads();
+        h[idx] += h[idx + 8];
+        __syncthreads();
+        h[idx] += h[idx +  4];
+        __syncthreads();
+        h[idx] += h[idx +   2];
+        __syncthreads();
+        if (y_idx == 0) h[idx] = y[x_idx] - (h[idx] + h[idx + 1]);
+    }
 }
 
 int main() {
